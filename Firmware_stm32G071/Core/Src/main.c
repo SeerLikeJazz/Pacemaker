@@ -41,16 +41,16 @@ Io=Vin/R10
 Io=DAC_Value/4096*3300/10
 DAC_Value=Io*12.4
 */
-#define I_100uA  1000
-#define I_200uA  1750
-#define I_300uA  2500
-#define I_400uA  3250
-#define I_500uA  4000
+#define I_100uA  400
+#define I_200uA  800
+#define I_300uA  1200
+#define I_400uA  1600
+#define I_500uA  2000
 /*需要示波器在线调整*/
-#define W_1ms  2
-#define W_2ms  4
-#define W_3ms  6
-#define W_4ms  8
+#define W_1ms  5
+#define W_2ms  10
+#define W_3ms  15
+#define W_4ms  20
 
 #define F_2000ms 2000
 #define F_1000ms 1000
@@ -73,9 +73,9 @@ uint8_t RXbuff[10];
 uint16_t Iset[5]={I_100uA, I_200uA, I_300uA, I_400uA, I_500uA};
 uint16_t Wset[4]={W_1ms, W_2ms, W_3ms, W_4ms};
 uint16_t Fset[4]={F_2000ms, F_1000ms, F_500ms, F_333ms};	
-uint16_t Parm_I;
-uint16_t Parm_W;
-uint16_t Parm_F;
+uint16_t Parm_I = 1200;
+uint16_t Parm_W = 10;
+uint16_t Parm_F = 1000;
 
 /* USER CODE END PV */
 
@@ -87,9 +87,9 @@ void SystemClock_Config(void);
 
 /* Private user code ---------------------------------------------------------*/
 /* USER CODE BEGIN 0 */
-void Time_400us(uint8_t time){
+void Time_200us(uint8_t time){
 	for(uint8_t j=0;j<time;j++){
-		for(uint32_t i=0;i<6400;i++);
+		for(uint32_t i=0;i<3200;i++);
 	}
 }
 
@@ -136,7 +136,7 @@ int main(void)
 	HAL_Delay(10);
 	for(uint8_t i=0;i<7;i++) {
 		HAL_GPIO_WritePin(EN1_GPIO_Port, EN1_Pin, GPIO_PIN_SET);
-		Time_400us(1);
+		Time_200us(2);
 		HAL_GPIO_WritePin(EN1_GPIO_Port, EN1_Pin, GPIO_PIN_RESET);
 		Time_100us();	
 	}
@@ -153,10 +153,10 @@ int main(void)
     /* USER CODE END WHILE */
 
     /* USER CODE BEGIN 3 */
-//		HAL_DAC_SetValue(&hdac1,DAC_CHANNEL_1,DAC_ALIGN_12B_R,Parm_I);
-//		Time_400us(Parm_W);
-//		HAL_DAC_SetValue(&hdac1,DAC_CHANNEL_1,DAC_ALIGN_12B_R,0);
-//		HAL_Delay(Parm_F);
+		HAL_DAC_SetValue(&hdac1,DAC_CHANNEL_1,DAC_ALIGN_12B_R,Parm_I);
+		Time_200us(Parm_W);
+		HAL_DAC_SetValue(&hdac1,DAC_CHANNEL_1,DAC_ALIGN_12B_R,0);
+		HAL_Delay(Parm_F);
 
   }
   /* USER CODE END 3 */
